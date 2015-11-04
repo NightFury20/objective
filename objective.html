@@ -3,31 +3,44 @@
 </head>
 
 <body>
-	{{#if currentUser}}
-		{{> dashboard}}
-	{{else}}
-		{{> register}}
-		{{> login}}
-	{{/if}}
+	<div class="container">
+		{{#if currentUser}}
+			{{> dashboard}}
+		{{else}}	
+			{{> login}}
+		{{/if}}
+	</div>
 </body>
 
-<template name="register">
-	<form>
-		<input type="email" name="registerEmail">
-		<input type="password" name="registerPassword">
-		<input type="submit" value="Register">
-	</form>
-</template>
-
 <template name="login">
-	<form>
-		<input type="email" name="loginEmail">
-		<input type="password" name="loginPassword">
-		<input type="submit" value="Login">
-	</form>
+	<ul class="nav nav-tabs nav-justify">
+		<li class="active"><a data-toggle="tab" href="#login">Log in</a></li>
+		<li><a data-toggle="tab" href="#signup">Sign up</a></li>
+	</ul>
+	<div class="tab-content">
+		<div id="login" class="tab-pane fade in active">	
+			<form>
+				<p>Email:<br><input type="email" name="loginEmail"></p>
+				<p>Password:<br><input type="password" name="loginPassword"></p>
+				<p><input type="submit" value="Login"></p>
+			</form>
+		</div>
+
+		<div id="signup" class="tab-pane fade">
+			<form>
+				<p>Email:<br><input type="email" name="signupEmail"></p>
+				<p>Display Name (optional):<br><input type="text" name="signupDisplayName"></p>
+				<p>Password:<br><input type="password" name="signupPassword"></p>
+				<p>Confirm Password<br><input type="password" name="signupConfirmPassword"></p>
+				<p><input type="submit" value="Sign Up"></p>
+			</form>
+		</div>
+	</div>
 </template>
 
-<template>
-	<p>You're logged in</p>
-	<p><a href="#" class="logout">Logout</a></p>
+<template name="dashboard">
+	<div class="container">
+		<p>You're logged in</p>
+		<p><a href="#" class="logout">Logout</a></p>
+	</div>
 </template>

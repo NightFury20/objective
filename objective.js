@@ -10,12 +10,12 @@ if (Meteor.isServer) {
 if (Meteor.isClient) {
 	// This code only runs on the client (meant for the interface)
 
- 	Template.register.events({	// Responds to register submit event
+ 	Template.signup.events({	// Responds to sign up submit event
  		'submit form': function(event) {
  			event.preventDefault(); // No default behaviour
- 			var emailVar = event.target.registerEmail.value; // Store email value from form
- 			var passwordVar = event.target.registerPassword.value; // Store password value from form
- 			console.log("Register form submitted."); // Output message in console
+ 			var emailVar = event.target.signupEmail.value; // Store email value from form
+ 			var passwordVar = event.target.signupPassword.value; // Store password value from form
+ 			console.log("Sign up form submitted."); // Output message in console
 
  			Accounts.createUser({
  				email: emailVar,
