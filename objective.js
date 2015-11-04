@@ -1,10 +1,44 @@
-if (Meteor.isClient) {
-  // counter starts at 0
-  
-}
+Objectives = new Mongo.Collection("objectives");
 
 if (Meteor.isServer) {
-  Meteor.startup(function () {
-    // code to run on server at startup
-  });
+	// This code only runs on the server
+  	Meteor.startup(function () {
+    	// code to run on server at startup
+  	});
+}
+
+if (Meteor.isClient) {
+	// This code only runs on the client (meant for the interface)
+
+ 	Template.register.events({	// Responds to register submit event
+ 		'submit form': function(event) {
+ 			event.preventDefault(); // No default behaviour
+ 			var emailVar = event.target.registerEmail.value; // Store email value from form
+ 			var passwordVar = event.target.registerPassword.value; // Store password value from form
+ 			console.log("Register form submitted."); // Output message in console
+
+ 			Accounts.createUser({
+ 				email: emailVar,
+ 				password: passwordVar
+ 			});
+ 		}
+ 	});
+
+ 	Template.login.events({	// Responds to login submit event
+ 		'submit form': function(event) {
+ 			event.preventDefault();	// No default behaviour
+ 			var emailVar = event.target.loginEmail.value;	// Store email value from form
+ 			var passwordVar = event.target.loginPassword.value;	// Store password value from form
+ 			console.log("Login form submitted")	// Output message in console
+
+ 			Meteor.loginWithPassword(emailVar, passwordVar);
+ 		}
+ 	});
+
+ 	Template.dashboard.events({
+ 		'click .logout': function(event) {
+ 			event.preventDefault();	//	No default behaviour
+ 			Meteor.logout();	// Call meteors logout method
+ 		}
+ 	})
 }

@@ -3,34 +3,31 @@
 </head>
 
 <body>
-	<!-- Facebook sdk script -->
-  	<script>
-	  window.fbAsyncInit = function() {
-	    FB.init({
-	      appId      : '1508225106141794',
-	      xfbml      : true,
-	      version    : 'v2.5'
-	    });
-	  };
-
-	  (function(d, s, id){
-	     var js, fjs = d.getElementsByTagName(s)[0];
-	     if (d.getElementById(id)) {return;}
-	     js = d.createElement(s); js.id = id;
-	     js.src = "//connect.facebook.net/en_US/sdk.js";
-	     fjs.parentNode.insertBefore(js, fjs);
-	   }(document, 'script', 'facebook-jssdk'));
-	</script>
-
-  <h1>Welcome Objective Webapp!</h1>
-
-  <!-- Facebook Like & Share button 
-  <div class="fb-like" data-share="true" data-width="450" data-show-faces="true"> </div><br />-->
-
-  {{> loginButtons}}<!-- Requires accounts-ui package -->
-
+	{{#if currentUser}}
+		{{> dashboard}}
+	{{else}}
+		{{> register}}
+		{{> login}}
+	{{/if}}
 </body>
 
-<template name="objective">
-  
+<template name="register">
+	<form>
+		<input type="email" name="registerEmail">
+		<input type="password" name="registerPassword">
+		<input type="submit" value="Register">
+	</form>
+</template>
+
+<template name="login">
+	<form>
+		<input type="email" name="loginEmail">
+		<input type="password" name="loginPassword">
+		<input type="submit" value="Login">
+	</form>
+</template>
+
+<template>
+	<p>You're logged in</p>
+	<p><a href="#" class="logout">Logout</a></p>
 </template>
