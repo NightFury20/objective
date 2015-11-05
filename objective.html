@@ -21,7 +21,7 @@
 				<form id="login-form" class="form-horizontal">
 					<label>Email:</label><input id="loginEmail" type="email" name="loginEmail">
 					<label>Password:</label><input id="loginPassword" type="password" name="loginPassword">
-					<br>
+					<p><a href="ForgotPassword" id="forgotPasswordLink">Forgot Password?</a></p>
 					<input id="loginbtn" class="btn btn-default loginbtn" type="submit" value="Log in">
 				</form>
 			</div>
@@ -38,6 +38,25 @@
 			</div>
 		</div>
 	</div>
+</template>
+
+<template name="passwordRecovery">
+	{{#if resetPassword}}
+		<form id="new-password-form" action="action" class="form-horizontal">
+			<div class="container">
+				<label>New Password:<input id ="newPassword" type="password" name="newPassword"></label>
+				<label>Confirm New Password:<input id ="confirmNewPassword" type="password" name="confirmNewPassword"></label>
+				<input id="changePasswordbtn" class="btn btn-default loginbtn" type="submit" value="Change Password">
+			</div>
+		</form>
+	{{else}}
+		<form id="recovery-form" action="action" class="form-horizontal">
+			<div class="container">
+				<input id ="recoveryEmail" type="text" name="recoveryEmail">
+				<input id="sendResetInstructionbtn" class="btun btn-default loginbtn" type="submit" value="Send Reset Instructions"> 
+			</div>
+		</form>
+	{{/if}}
 </template>
 
 <template name="dashboard">
