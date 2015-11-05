@@ -1,1 +1,40 @@
-/* CSS declarations go here */
+/* Log in Template CSS */
+.nav-tabs.nav-justified>.active>a, .nav-tabs.nav-justified>.active>a:hover, .nav-tabs.nav-justified>.active>a:focus {
+	border-bottom-color: #3E444C !important;
+}
+.nav-tabs.nav-justified>li>a:hover, .nav-tabs.nav-justified>li>a:focus {
+	border-bottom-color: #3E444C !important;
+}
+
+#loginContainer {
+	margin-top: 50px;
+}
+
+#loginNav {
+	width: 245px;
+	padding: 0px;
+}
+
+#loginContent > div {
+	max-width: 100%;
+}
+
+#loginContent {
+	padding: 10px;
+	width: 245px;
+	border: solid 1px #1C1E22;
+	border-top: none;
+	background-color: #3E444C;
+}
+
+.loginbtn, input {
+	width: 100%;
+}
+label {
+	margin-bottom: 0px;
+}
+input {
+	margin-top: 0px;
+	margin-bottom: 10px;
+}
+/* End of Log in Template CSS */

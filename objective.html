@@ -3,44 +3,53 @@
 </head>
 
 <body>
-	<div class="container">
-		{{#if currentUser}}
-			{{> dashboard}}
-		{{else}}	
-			{{> login}}
-		{{/if}}
-	</div>
+	{{#if currentUser}}
+		{{> dashboard}}
+	{{else}}	
+		{{> login}}
+	{{/if}}
 </body>
 
 <template name="login">
-	<ul class="nav nav-tabs nav-justify">
-		<li class="active"><a data-toggle="tab" href="#login">Log in</a></li>
-		<li><a data-toggle="tab" href="#signup">Sign up</a></li>
-	</ul>
-	<div class="tab-content">
-		<div id="login" class="tab-pane fade in active">	
-			<form>
-				<p>Email:<br><input type="email" name="loginEmail"></p>
-				<p>Password:<br><input type="password" name="loginPassword"></p>
-				<p><input type="submit" value="Login"></p>
-			</form>
-		</div>
+	<div id="loginContainer" class="container">
+		<ul id="loginNav" class="container nav nav-tabs nav-justified">
+			<li class="active"><a data-toggle="tab" href="#login-pane">Log in</a></li>
+			<li><a data-toggle="tab" href="#signup-pane">Sign up</a></li>
+		</ul>
+		<div id="loginContent" class="container tab-content">
+			<div id="login-pane" class="container tab-pane fade in active">	
+				<form id="login-form" class="form-horizontal">
+					<label>Email:</label><input id="loginEmail" type="email" name="loginEmail">
+					<label>Password:</label><input id="loginPassword" type="password" name="loginPassword">
+					<br>
+					<input id="loginbtn" class="btn btn-default loginbtn" type="submit" value="Log in">
+				</form>
+			</div>
 
-		<div id="signup" class="tab-pane fade">
-			<form>
-				<p>Email:<br><input type="email" name="signupEmail"></p>
-				<p>Display Name (optional):<br><input type="text" name="signupDisplayName"></p>
-				<p>Password:<br><input type="password" name="signupPassword"></p>
-				<p>Confirm Password<br><input type="password" name="signupConfirmPassword"></p>
-				<p><input type="submit" value="Sign Up"></p>
-			</form>
+			<div id="signup-pane" class="container tab-pane fade">
+				<form id="signup-form" class="form-horizontal">
+					<label>Email:</label><input id="signupEmail" type="email" name="signupEmail">
+					<label>Display Name (optional):</label><input id="signupDisplayName" type="text" name="signupDisplayName">
+					<label>Password:</label><input id="signupPassword" type="password" name="signupPassword">
+					<label>Confirm Password:</label><input id="signupConfirmPassword" type="password" name="signupConfirmPassword">
+					<br>
+					<input id="signupbtn" class="btn btn-default loginbtn" type="submit" value="Sign up">
+				</form>
+			</div>
 		</div>
 	</div>
 </template>
 
 <template name="dashboard">
 	<div class="container">
-		<p>You're logged in</p>
-		<p><a href="#" class="logout">Logout</a></p>
+		<br>
+		<p>Welcome 
+			{{#if currentUser.profile.name}}
+				{{currentUser.profile.name}}
+			{{else}}
+				{{currentUser.username}}
+			{{/if}}
+		</p>
+		<p><a id="logout" href="#">Logout</a></p>
 	</div>
 </template>
