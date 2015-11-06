@@ -66,7 +66,7 @@ if (Meteor.isClient) {
 							$('#loginPasswordGroup').addClass('has-error');
 							console("Login failed: " + err.message);
 						} else {
-							alert("Login failed " + err.message);
+							$('#login-email-message').text("Login failed: " + err.message);
 							console("Login failed: " + err.message);
 						}
 					}
@@ -83,6 +83,7 @@ if (Meteor.isClient) {
  			// Reset validations
  			$('#signup-email-message').text("");
  			$('#signup-password-message').text("");
+ 			$('#signup-confirm-password-message').text("");
  			$('#signupEmailGroup').removeClass('has-error');
  			$('#signupPasswordGroup').removeClass('has-error');
  			$('#signupConfirmPasswordGroup').removeClass('has-error');
@@ -94,17 +95,36 @@ if (Meteor.isClient) {
 		    	password2 = template.find('#signupConfirmPassword').value;
 
 		    // Validate Input
+		    if (email === "") {
+				validated = false;
+				$('#signup-email-message').text("Email field is empty");
+				$('#signupEmailGroup').addClass('has-error');
+				console.log("Email field is empty");
+			}
+
 		    if(password === "") {
 				validated = false;
 				$('#signup-password-message').text("Password field is empty")
+				$('#signupPasswordGroup').addClass('has-error');
 				console.log("Password field is empty");
 			} else if (password.length < 6) {
 				validated = false;
-				alert("Password is too short (must be at least 6 characters long");
-				console.log("Password too short (must be at least 6 characters long");
-			} else if(password !== password2) {
+				$('#signup-password-message').text("Password must be at least 6 characters long");
+				$('#signupPasswordGroup').addClass('has-error');
+				console.log("Password must be at least 6 characters long");
+			}
+
+			if(password2 === "") {
+				validated = false;
+				$('#signup-confirm-password-message').text("Confirm field is empty");
+				$('#signupConfirmPasswordGroup').addClass('has-error');
+			}
+
+			if(validated && password !== password2) {
 		    	validated = false;
-		    	alert("Passwords don't match");
+		    	$('#signup-password-message').text("Passwords don't match");
+		    	$('#signupPasswordGroup').addClass('has-error');
+		    	$('#signupConfirmPasswordGroup').addClass('has-error');
 		    	console.log("Passwords don't match");
 		    }
 
@@ -112,16 +132,22 @@ if (Meteor.isClient) {
 			    Accounts.createUser({username: email, email: email, password : password, profile:{name: name}}, function(err){
 			        if (err) {
 			    	    // Inform the user that account creation failed
-			    	    alert("Account creation failed");
-			    	    console.log("Account creation failed");
+			    	    if(err.message === "Username already exists. [403]") {
+				    	    $('#signup-email-message').text("Username already exists");
+				    	    $('#signupEmailGroup').addClass('has-error');
+				    	    console.log("Username already exists");
+				    	} else {
+				    		$('#signup-email-message').text("Account creation failed: " + err.message);
+							console("Account creation failed: " + err.message);
+				    	}
 			        } else {
 			            // Success. Account has been created and the user has logged in successfully. 
-			            console.log("Account has successfully been created");
+			            console.log("Account created");
 			        }
 			    });
 			} else {
 				// Not validated, inform user
-				console.log("Not validated");
+				console.log("Not validated, account not created");
 			}
 		    return false; // Stops page from reloading
 		},
