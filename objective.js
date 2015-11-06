@@ -1,19 +1,39 @@
+if (Meteor.isServer) {
+	// This code only runs on the server
+  	Meteor.startup(function () {
+    	// code to run on server at startup
+    	Accounts.emailTemplates.from = "Verification Link";
+  	});
+  	Accounts.config({
+  		sendVerificationEmail: true
+  	});
+}
+
 if (Meteor.isClient) {
 	// This code only runs on the client (meant for the interface)
+	
 	// Trim helper
 	var trimInput = function(val) {
 		return val.replace(/^\s*|\s*$/g, "");
 	};
 
+	// This runs if the resetPasswordToken is present (aka clicked from email)
+	if (Accounts._resetPasswordToken) {
+		Session.set('resetPassword', Accounts._resetPasswordToken);
+	}
+
 	Template.login.events({	// Responds to login submit event
- 		'submit #login-form': function(event, t) {	//When form is submitted
+ 		'submit #login-form': function(event, template) {	//When form is submitted
  			event.preventDefault();
  			// Retrieve the input field values
- 			var email = document.getElementById('loginEmail').value,
- 				password = document.getElementById('loginPassword').value;
+ 			var email = trimInput(template.find('#loginEmail').value),
+ 				password = template.find('#loginPassword').value;
 
-			// Trim and validation your fields here....
-			email = trimInput(email);
+			// Validation your fields here
+			if (email === "") {
+				alert("Email field is empty");
+				console.log("Email field is empty");
+			}
 
 			// If validation passes, supply the appropriate fields to the Meteor.loginWithPassword() function.
 			Meteor.loginWithPassword(email, password, function(err) {
@@ -24,18 +44,18 @@ if (Meteor.isClient) {
 				}
 				else {
 					// The user has been logged in.
-					console.log("Login sucessful");
+					console.log("Login successful");
 				}
 			});
  			return false; // Stops page from reloading
  		},
- 		'submit #signup-form': function(event) { // When form is submitted
+ 		'submit #signup-form': function(event, template) { // When form is submitted
  			event.preventDefault();
  			var validated = true,
- 				email = trimInput(document.getElementById('signupEmail').value),
-		    	name = trimInput(document.getElementById('signupDisplayName').value),
-		    	password = document.getElementById('signupPassword').value,
-		    	password2 = document.getElementById('signupConfirmPassword').value;
+ 				email = trimInput(template.find('#signupEmail').value),
+		    	name = trimInput(template.find('#signupDisplayName').value),
+		    	password = template.find('#signupPassword').value,
+		    	password2 = template.find('#signupConfirmPassword').value;
 
 		    // Validate Input
 		    if(password === "") {
@@ -73,20 +93,23 @@ if (Meteor.isClient) {
 			}
 		    return false; // Stops page from reloading
 		},
-	});
 
-	Template.passwordRecovery.events({
-		'submit #recovery-form': function(event) {
+		'submit #recovery-form': function(event, template) {
 			event.preventDefault();
 			var validated = true;
-				email = trimInput(document.getElementById('recoveryEmail').value);
+				email = trimInput(template.find('#recoveryEmail').value);
+
+			if(email === "") {
+				alert("Email is empty");
+				console.log("Email is empty");
+			}
 
 			if (validated) {
 				Session.set('loading', true);
-				Account.forgotPassword({email: email}, function(err) {
+				Accounts.forgotPassword({email: email}, function(err) {
 					if (err) {
 						alert("Password Reset Failed");
-						console.log("Password Reset Failed");
+						console.log("Password Reset Failed" + err);
 					} else {
 						alert("Email sent");
 						console.log("Email sent, check email");
@@ -97,11 +120,11 @@ if (Meteor.isClient) {
 			return false; // Stops page from reloading
 		},
 
-		'submit #new-password-form' : function(event) {
+		'submit #new-password-form' : function(event, template) {
 			event.preventDefault();
 			var validated = true,
-				password = document.getElementById('newPassword').value,
-		    	password2 = document.getElementById('confirmNewPassword').value;
+				password = template.find('#newPassword').value,
+		    	password2 = template.find('#confirmNewPassword').value;
 
 		    // Validate input
 		    if(password === "") {
@@ -138,29 +161,23 @@ if (Meteor.isClient) {
 		}
 	});
 
-	if (Accounts._resetPasswordToken) {
-		Session.set('resetPassword', Accounts._resetPasswordToken);
-	}
-
-	Template.passwordRecovery.helpers({
+	Template.login.helpers({
 		resetPassword : function(t) {
+			if (Accounts._resetPasswordToken) {
+				Session.set('resetPassword', Accounts._resetPasswordToken);
+			}
 			return Session.get('resetPassword');
 		}
 	});
 
  	Template.dashboard.events({
  		'click #logout': function(event) {
- 			Meteor.logout();
+ 			event.preventDefault();
+ 			Meteor.logout(function(err) {
+ 				if(err) {
+ 					alert("Unable to logout from application");
+ 				}
+ 			});
  		}
  	});
-}
-
-if (Meteor.isServer) {
-	// This code only runs on the server
-  	Meteor.startup(function () {
-    	// code to run on server at startup
-  	});
-  	Accounts.config({
-  		sendVerificationEmail: true
-  	});
 }
