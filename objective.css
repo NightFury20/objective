@@ -6,9 +6,13 @@
 	border-bottom-color: #3E444C !important;
 }
 
+div.form-group {
+	margin-bottom: 0px;
+}
+
 #loginContainer {
 	padding-top: 15px;
-	padding-bottom: 15px;
+	padding-bottom: 0px;
 }
 
 #loginNav {
@@ -22,7 +26,7 @@
 
 #loginContent {
 	padding-top: 10px;
-	padding-bottom: 20px;
+	padding-bottom: 15px;
 	max-width: 250px;
 	border: solid 1px #1C1E22;
 	border-bottom-right-radius: 5px;
@@ -34,17 +38,17 @@
 .loginbtn, input {
 	width: 100%;
 }
-label {
+
+.loginbtn:focus {
+	outline: 0;
+}
+
+#forgotPassword {
+	margin-top: 5px;
+}
+
+.small-space {
+	margin-top: 0px;
 	margin-bottom: 0px;
 }
-input {
-	margin-top: 0px;
-	margin-bottom: 10px;
-}
 /* End of Log in Template CSS */
-
-/* Password Recovery Template */
-
-
-
-/* End of Password Recovery Template */

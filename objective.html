@@ -19,10 +19,16 @@
 		<div id="loginContent" class="container tab-content">
 			<div id="login-pane" class="container tab-pane fade in active">	
 				<form id="login-form" action="action" class="form-horizontal">
-					<label>Email:</label><input id="loginEmail" type="email" name="loginEmail">
-					<label>Password:</label><input id="loginPassword" type="password" name="loginPassword">
-					<p><a data-toggle="tab" href="#recovery-pane" id="forgotPasswordLink">Forgot Password?</a></p>
-					<input id="loginbtn" class="btn btn-default loginbtn" type="submit" value="Log in">
+					<div id="loginEmailGroup" class="form-group">
+						<label class="control-label" for="loginEmail">Email:</label><input id="loginEmail" type="email" name="loginEmail" placeholder="Email" class="form-control">
+					</div>
+					<div id="loginPasswordGroup" class="form-group">
+						<label class="control-label" for="loginPassword">Password:</label><input id="loginPassword" type="password" name="loginPassword" placeholder="Password" class="form-control">
+					</div>
+						<p id="forgotPassword"><a data-toggle="tab" href="#recovery-pane" id="forgotPasswordLink">Forgot Password?</a></p>
+						<p id="login-email-message" class="text-danger small-space"></p>
+						<p id="login-password-message" class="text-danger"></p>
+						<input id="loginbtn" class="btn btn-default loginbtn" type="submit" value="Log in">
 				</form>
 			</div>
 
@@ -35,11 +41,22 @@
 
 			<div id="signup-pane" class="container tab-pane fade">
 				<form id="signup-form" action="action" class="form-horizontal">
-					<label>Email:</label><input id="signupEmail" type="email" name="signupEmail">
-					<label>Display Name (optional):</label><input id="signupDisplayName" type="text" name="signupDisplayName">
-					<label>Password:</label><input id="signupPassword" type="password" name="signupPassword">
-					<label>Confirm Password:</label><input id="signupConfirmPassword" type="password" name="signupConfirmPassword">
+					<div id="signupEmailGroup" class="form-group">
+						<label class="control-label" for="signupEmail">Email:</label><input id="signupEmail" type="email" name="signupEmail" placeholder="Email" class="form-control">
+					</div>
+					<div id="signupDisplayNameGroup" class="form-group">
+						<label class="control-label" for="signupDisplayName">Display Name (optional):</label><input id="signupDisplayName" type="text" name="signupDisplayName" placeholder="Display Name" class="form-control">
+					</div>
+					<div id="signupPassGroup" class="form-group">
+						<label class="control-label" for="signupPassword">Password:</label><input id="signupPassword" type="password" name="signupPassword" placeholder="Password" class="form-control">
+					</div>
+					<div id="signupConfirmPasswordGroup" class="form-group">
+						<label class="control-label" for="signupConfirmPassword">Confirm Password:</label><input id="signupConfirmPassword" type="password" name="signupConfirmPassword" placeholder="Confirm Password" class="form-control">
+					</div>
 					<br>
+					<p id="signup-email-message" class="text-danger small-space"></p>
+					<p id="signup-password-message" class="text-danger small-space"></p>
+					<p id="signup-confirm-password-message" class="text-danger"></p>
 					<input id="signupbtn" class="btn btn-default loginbtn" type="submit" value="Sign up">
 				</form>
 			</div>
@@ -48,15 +65,16 @@
 				{{#if resetPassword}}
 					<form id="new-password-form" action="action" class="form-horizontal">
 						<h4>Reset Password</h4>
-						<label>New Password:</label><input id ="newPassword" type="password" name="newPassword">
-						<label>Confirm New Password:</label><input id ="confirmNewPassword" type="password" name="confirmNewPassword">
+						<label>New Password:</label><input id ="newPassword" type="password" name="newPassword" placeholder="Password">
+						<label>Confirm New Password:</label><input id ="confirmNewPassword" type="password" name="confirmNewPassword" placeholder="Confirm Password">
+						<p id="reset-message" class="text-danger"></p>
 						<input id="changePasswordbtn" class="btn btn-default loginbtn" type="submit" value="Change Password">
 					</form>
 				{{else}}
 					<form id="recovery-form" action="action" class="form-horizontal">
 						<h4>Recover Password</h4>
-						<label>Email:</label>
-						<input id ="recoveryEmail" type="text" name="recoveryEmail">
+						<label>Email:</label><input id ="recoveryEmail" type="text" name="recoveryEmail" placeholder="Email">
+						<p id="recovery-message" class="text-danger"></p>
 						<input id="sendResetInstructionbtn" class="btn btn-default loginbtn" type="submit" value="Send Reset Instructions">
 					</form>
 				{{/if}}
@@ -89,11 +107,19 @@
 <template name="dashboard">
 	<div class="container">
 		<br>
+		<p>{{user}}</p>
 		<p>Welcome 
 			{{#if currentUser.profile.name}}
 				{{currentUser.profile.name}}
 			{{else}}
-				{{currentUser.username}}
+				{{currentUser.emails.[0].address}}
+			{{/if}}
+		</p>
+		<p>
+			{{#if currentUser.emails.[0].verified}}
+				<p>Email is verified</p>
+			{{else}}
+				<p>Email is not verified</p>
 			{{/if}}
 		</p>
 		<p><a id="logout" href="#">Logout</a></p>

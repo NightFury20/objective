@@ -5,7 +5,8 @@ if (Meteor.isServer) {
     	Accounts.emailTemplates.from = "Verification Link";
   	});
   	Accounts.config({
-  		sendVerificationEmail: true
+  		sendVerificationEmail: true,
+  		loginExpirationInDays: 30
   	});
 }
 
@@ -25,32 +26,67 @@ if (Meteor.isClient) {
 	Template.login.events({	// Responds to login submit event
  		'submit #login-form': function(event, template) {	//When form is submitted
  			event.preventDefault();
+ 			// Reset validations
+ 			$('#login-email-message').text("");
+ 			$('#login-password-message').text("");
+ 			$('#loginEmailGroup').removeClass('has-error');
+ 			$('#loginPasswordGroup').removeClass('has-error');
+
  			// Retrieve the input field values
- 			var email = trimInput(template.find('#loginEmail').value),
+ 			var validated = true,
+ 				email = trimInput(template.find('#loginEmail').value),
  				password = template.find('#loginPassword').value;
 
 			// Validation your fields here
 			if (email === "") {
-				alert("Email field is empty");
+				validated = false;
+				$('#login-email-message').text("Email field is empty");
+				$('#loginEmailGroup').addClass('has-error');
 				console.log("Email field is empty");
 			}
 
+			if (password === "") {
+				validated = false;
+				$('#login-password-message').text("Password field is empty");
+				$('#loginPasswordGroup').addClass('has-error');
+				console.log("Password field is empty");
+			}
+
 			// If validation passes, supply the appropriate fields to the Meteor.loginWithPassword() function.
-			Meteor.loginWithPassword(email, password, function(err) {
-				if (err) {
-					// The user might not have been found, or their password could be incorrect.  Inform the user that their login attempt has failed
-					alert("Login failed");
-					console("Login failed");
-				}
-				else {
-					// The user has been logged in.
-					console.log("Login successful");
-				}
-			});
+			if (validated)
+				Meteor.loginWithPassword(email, password, function(err) {
+					if (err) {
+						// The user might not have been found, or their password could be incorrect.  Inform the user that their login attempt has failed
+						if(err.message === "User not found [403]") {
+							$('#login-email-message').text("User does not exist");
+							$('#loginEmailGroup').addClass('has-error');
+							console("Login failed: " + err.message);
+						} else if(err.message === "Incorrect password [403]") {
+							$('#login-password-message').text("Incorrect password");
+							$('#loginPasswordGroup').addClass('has-error');
+							console("Login failed: " + err.message);
+						} else {
+							alert("Login failed " + err.message);
+							console("Login failed: " + err.message);
+						}
+					}
+					else {
+						// The user has been logged in.
+						console.log("Login successful");
+					}
+				});
  			return false; // Stops page from reloading
  		},
  		'submit #signup-form': function(event, template) { // When form is submitted
  			event.preventDefault();
+
+ 			// Reset validations
+ 			$('#signup-email-message').text("");
+ 			$('#signup-password-message').text("");
+ 			$('#signupEmailGroup').removeClass('has-error');
+ 			$('#signupPasswordGroup').removeClass('has-error');
+ 			$('#signupConfirmPasswordGroup').removeClass('has-error');
+
  			var validated = true,
  				email = trimInput(template.find('#signupEmail').value),
 		    	name = trimInput(template.find('#signupDisplayName').value),
@@ -60,17 +96,13 @@ if (Meteor.isClient) {
 		    // Validate Input
 		    if(password === "") {
 				validated = false;
-				alert("Please enter a password");
+				$('#signup-password-message').text("Password field is empty")
 				console.log("Password field is empty");
-			}
-
-			if (password.length < 6) {
+			} else if (password.length < 6) {
 				validated = false;
 				alert("Password is too short (must be at least 6 characters long");
 				console.log("Password too short (must be at least 6 characters long");
-			}
-
-		    if(password !== password2) {
+			} else if(password !== password2) {
 		    	validated = false;
 		    	alert("Passwords don't match");
 		    	console.log("Passwords don't match");
@@ -106,7 +138,7 @@ if (Meteor.isClient) {
 
 			if (validated) {
 				Session.set('loading', true);
-				Accounts.forgotPassword({email: email}, function(err) {
+				Accounts.forgotPassword(email, function(err) {
 					if (err) {
 						alert("Password Reset Failed");
 						console.log("Password Reset Failed" + err);
