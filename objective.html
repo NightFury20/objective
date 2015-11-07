@@ -65,16 +65,25 @@
 				{{#if resetPassword}}
 					<form id="new-password-form" action="action" class="form-horizontal">
 						<h4>Reset Password</h4>
-						<label>New Password:</label><input id ="newPassword" type="password" name="newPassword" placeholder="Password">
-						<label>Confirm New Password:</label><input id ="confirmNewPassword" type="password" name="confirmNewPassword" placeholder="Confirm Password">
-						<p id="reset-message" class="text-danger"></p>
+						<div  id="newPasswordGroup" class="form-group">
+							<label class="control-label" for="newPassword">New Password:</label><input id ="newPassword" type="password" name="newPassword" placeholder="Password" class="form-control">
+						</div>
+						<div  id="confirmNewPasswordGroup" class="form-group">
+							<label class="control-label" for="confirmNewPassword">Confirm New Password:</label><input id ="confirmNewPassword" type="password" name="confirmNewPassword" placeholder="Confirm Password" class="form-control">
+						</div>
+						<br>
+						<p id="reset-password-message" class="text-danger"></p>
+						<p id="reset-confirm-message" class="text-danger"></p>
 						<input id="changePasswordbtn" class="btn btn-default loginbtn" type="submit" value="Change Password">
 					</form>
 				{{else}}
 					<form id="recovery-form" action="action" class="form-horizontal">
 						<h4>Recover Password</h4>
-						<label>Email:</label><input id ="recoveryEmail" type="text" name="recoveryEmail" placeholder="Email">
-						<p id="recovery-message" class="text-danger"></p>
+						<div  id="recoveryEmailGroup" class="form-group">
+							<label class="control-label" for="recoveryEmail">Email:</label><input id ="recoveryEmail" type="text" name="recoveryEmail" placeholder="Email" class="form-control">
+						</div>
+						<br>
+						<p id="recovery-email-message" class="text-danger"></p>
 						<input id="sendResetInstructionbtn" class="btn btn-default loginbtn" type="submit" value="Send Reset Instructions">
 					</form>
 				{{/if}}

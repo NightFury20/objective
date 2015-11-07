@@ -2,11 +2,29 @@ if (Meteor.isServer) {
 	// This code only runs on the server
   	Meteor.startup(function () {
     	// code to run on server at startup
-    	Accounts.emailTemplates.from = "Verification Link";
-  	});
-  	Accounts.config({
-  		sendVerificationEmail: true,
-  		loginExpirationInDays: 30
+    	/*
+    	process.env.MAIL_URL = "smtp://" +
+    		encodeURIComponent("postmaster@sandbox59f188a92d4a4ce7be6496425618e5dc.mailgun.org") + ":" +
+    		encodeURIComponent("94ebf534e001ded9927127134259afa8") + '@' +
+    		encodeURIComponent("smtp.mailgun.org") + ":" + 587;
+		*/
+		process.env.MAIL_URL = "smtp://" +
+			encodeURIComponent("barrydoyle18@gmail.com") + ":" + 
+			encodeURIComponent("malbec32") + "@" + 
+			encodeURIComponent("smtp.gmail.com") + ":" + 465;
+		Accounts.emailTemplates.from = "Barry Michael Doyle";
+		Accounts.emailTemplates.siteName = "Objective";
+		Accounts.emailTemplates.verifyEmail.subject = function(user) {
+			return 'Confirm Your Email Address for Objective';
+		};
+		Accounts.emailTemplates.verifyEmail.text = function(user, url) {
+		    return 'Thank you for registering.  Please click on the following link to verify your email address: \r\n' + url;
+		};	
+
+		Accounts.config({
+	  		sendVerificationEmail: true,
+	  		loginExpirationInDays: 30
+	  	});
   	});
 }
 
@@ -17,6 +35,14 @@ if (Meteor.isClient) {
 	var trimInput = function(val) {
 		return val.replace(/^\s*|\s*$/g, "");
 	};
+
+	// Verify email address format function
+	function isEmail(email) {
+	  	var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+	  	return regex.test(email);
+	}
+
+	//Accounts.onEmailVerificationLink(
 
 	// This runs if the resetPasswordToken is present (aka clicked from email)
 	if (Accounts._resetPasswordToken) {
@@ -43,6 +69,11 @@ if (Meteor.isClient) {
 				$('#login-email-message').text("Email field is empty");
 				$('#loginEmailGroup').addClass('has-error');
 				console.log("Email field is empty");
+			} else if (!isEmail(email)) {
+				validated = false;
+				$('#login-email-message').text("Email is not valid");
+				$('#loginEmailGroup').addClass('has-error');
+				console.log("Email is not valid");
 			}
 
 			if (password === "") {
@@ -53,7 +84,7 @@ if (Meteor.isClient) {
 			}
 
 			// If validation passes, supply the appropriate fields to the Meteor.loginWithPassword() function.
-			if (validated)
+			if (validated) {
 				Meteor.loginWithPassword(email, password, function(err) {
 					if (err) {
 						// The user might not have been found, or their password could be incorrect.  Inform the user that their login attempt has failed
@@ -75,6 +106,10 @@ if (Meteor.isClient) {
 						console.log("Login successful");
 					}
 				});
+			} else {
+				// Not validated, informed user above
+				console.log("Not validated, not logged in");
+			}
  			return false; // Stops page from reloading
  		},
  		'submit #signup-form': function(event, template) { // When form is submitted
@@ -100,6 +135,11 @@ if (Meteor.isClient) {
 				$('#signup-email-message').text("Email field is empty");
 				$('#signupEmailGroup').addClass('has-error');
 				console.log("Email field is empty");
+			} else if (!isEmail(email)) {
+				validated = false;
+				$('#login-email-message').text("Email is not valid");
+				$('#loginEmailGroup').addClass('has-error');
+				console.log("Email is not valid");
 			}
 
 		    if(password === "") {
@@ -132,13 +172,17 @@ if (Meteor.isClient) {
 			    Accounts.createUser({username: email, email: email, password : password, profile:{name: name}}, function(err){
 			        if (err) {
 			    	    // Inform the user that account creation failed
-			    	    if(err.message === "Username already exists. [403]") {
-				    	    $('#signup-email-message').text("Username already exists");
+			    	    if(err.message === "Email already exists. [403]") {
+				    	    $('#signup-email-message').text("User already exists");
 				    	    $('#signupEmailGroup').addClass('has-error');
-				    	    console.log("Username already exists");
+				    	    console.log("User already exists");
+				    	} else if (err.message === "Username already exists. [403]") {
+				    		$('#signup-email-message').text("User already exists");
+				    	    $('#signupEmailGroup').addClass('has-error');
+				    	    console.log("User already exists");
 				    	} else {
 				    		$('#signup-email-message').text("Account creation failed: " + err.message);
-							console("Account creation failed: " + err.message);
+							console.log("Account creation failed: " + err.message);
 				    	}
 			        } else {
 			            // Success. Account has been created and the user has logged in successfully. 
@@ -146,7 +190,7 @@ if (Meteor.isClient) {
 			        }
 			    });
 			} else {
-				// Not validated, inform user
+				// Not validated, informed user above
 				console.log("Not validated, account not created");
 			}
 		    return false; // Stops page from reloading
@@ -154,26 +198,49 @@ if (Meteor.isClient) {
 
 		'submit #recovery-form': function(event, template) {
 			event.preventDefault();
+
+			// Reset Validations
+			$('#recovery-email-message').text("");
+ 			$('#recoveryEmailGroup').removeClass('has-error');
+
 			var validated = true;
 				email = trimInput(template.find('#recoveryEmail').value);
 
-			if(email === "") {
-				alert("Email is empty");
-				console.log("Email is empty");
+			if (email === "") {
+				validated = false;
+				$('#recovery-email-message').text("Email field is empty");
+				$('#recoveryEmailGroup').addClass('has-error');
+				console.log("Email field is empty");
+			} else if (!isEmail(email)) {
+				validated = false;
+				$('#login-email-message').text("Email is not valid");
+				$('#loginEmailGroup').addClass('has-error');
+				console.log("Email is not valid");
 			}
 
 			if (validated) {
 				Session.set('loading', true);
-				Accounts.forgotPassword(email, function(err) {
+				Accounts.forgotPassword({email: email}, function(err) {
 					if (err) {
-						alert("Password Reset Failed");
-						console.log("Password Reset Failed" + err);
+						if (err.message === "User not found [403]") {
+							$('#recovery-email-message').text("User does not exist");
+							$('#recoveryEmailGroup').addClass('has-error');
+							console.log("User does not exist")
+						}
+						else {
+							$('#recovery-email-message').text("Password Reset Failed: " + err.message);
+							console.log("Password Reset Failed: " + err);
+						}					
 					} else {
 						alert("Email sent");
 						console.log("Email sent, check email");
 					}
 					Session.set('loading', false);
 				});
+			}
+			else {
+				// Not validated, informed user above
+				console.log("Not validated, password reset failed");
 			}
 			return false; // Stops page from reloading
 		},
