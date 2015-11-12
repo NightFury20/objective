@@ -169,6 +169,7 @@ if (Meteor.isClient) {
 		    }
 
 		    if (validated) {
+		    	Session.set('loading', true);
 			    Accounts.createUser({username: email, email: email, password : password, profile:{name: name}}, function(err){
 			        if (err) {
 			    	    // Inform the user that account creation failed
@@ -188,6 +189,7 @@ if (Meteor.isClient) {
 			            // Success. Account has been created and the user has logged in successfully. 
 			            console.log("Account created");
 			        }
+			        Session.set('loading', false);
 			    });
 			} else {
 				// Not validated, informed user above
@@ -232,8 +234,10 @@ if (Meteor.isClient) {
 							console.log("Password Reset Failed: " + err);
 						}					
 					} else {
-						alert("Email sent");
-						console.log("Email sent, check email");
+						$('#recovery-form').addClass('hidden');
+						$('#email-sent-message').text("<br />Email sent to: " + email + "<br /><br />Please check your email for further instructions");
+						$('#email-sent-message').removeClass('hidden');
+						console.log("Email sent to " + email + ", please check your email for further instructions");
 					}
 					Session.set('loading', false);
 				});
@@ -254,29 +258,38 @@ if (Meteor.isClient) {
 		    // Validate input
 		    if(password === "") {
 				validated = false;
-				alert("Please enter a password");
+				$('#new-password-message').text("Password field is empty")
+				$('#newPasswordGroup').addClass('has-error');
 				console.log("Password field is empty");
-			}
-
-		    if (password.length < 6) {
+			} else if (password.length < 6) {
 				validated = false;
-				alert("Password is too short (must be at least 6 characters long");
-				console.log("Password too short (must be at least 6 characters long");
+				$('#new-password-message').text("Password must be at least 6 characters long");
+				$('#newPasswordGroup').addClass('has-error');
+				console.log("Password must be at least 6 characters long");
 			}
 
-		    if(password !== password2) {
+			if(password2 === "") {
+				validated = false;
+				$('#onfirm-new-password-message').text("Confirm field is empty");
+				$('#confirmNewPasswordGroup').addClass('has-error');
+			}
+
+			if(validated && password !== password2) {
 		    	validated = false;
-		    	alert("Passwords don't match");
+		    	$('#new-password-message').text("Passwords don't match");
+		    	$('#newPasswordGroup').addClass('has-error');
+		    	$('#confirmNewPasswordGroup').addClass('has-error');
 		    	console.log("Passwords don't match");
 		    }
 
 		    if (validated) {
 		    	Session.set('loading', true);
-		    	Accounts.resetPassword(Session.get('resetPassword'), pw, function(err) {
+		    	Accounts.resetPassword(Session.get('resetPassword'), password, function(err) {
 		    		if (err) {
-		    			alert("Password Reset Error &amp; Sorry");
-		    			console.log("Password Reset Failed");
+		    			$('#new-password-message').text("Password Reset Failed: " + err);
+		    			console.log("Password Reset Failed: " + err);
 		    		} else {
+		    			/* Do password reset functions */
 		    			Session.set('resetPassword', null);
 		    		}
 		    		Session.set('loading', false);

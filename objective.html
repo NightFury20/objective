@@ -11,58 +11,27 @@
 </body>
 
 <template name="login">
-	<div id="loginContainer" class="container">
-		<ul id="loginNav" class="container nav nav-tabs nav-justified">
+	<div id="loginContainer" class="fluid-container">
+		<ul id="loginNav" class="fluid-container nav nav-tabs nav-justified">
 			<li id="login-tab" class="active"><a data-toggle="tab" href="#login-pane">Log in</a></li>
 			<li id="signup-tab"><a data-toggle="tab" href="#signup-pane">Sign up</a></li>
+			<li id="recovery-tab" class="hidden"><a data-toggle="tab" href="#recovery-pane">Recover Password</a></li>
+			<li id="reset-tab" class="hidden"><a data-toggle="tab" href="#reset-pane">Reset Password</a></li> 
 		</ul>
-		<div id="loginContent" class="container tab-content">
-			<div id="login-pane" class="container tab-pane fade in active">	
-				<form id="login-form" action="action" class="form-horizontal">
-					<div id="loginEmailGroup" class="form-group">
-						<label class="control-label" for="loginEmail">Email:</label><input id="loginEmail" type="email" name="loginEmail" placeholder="Email" class="form-control">
-					</div>
-					<div id="loginPasswordGroup" class="form-group">
-						<label class="control-label" for="loginPassword">Password:</label><input id="loginPassword" type="password" name="loginPassword" placeholder="Password" class="form-control">
-					</div>
-						<p id="forgotPassword"><a data-toggle="tab" href="#recovery-pane" id="forgotPasswordLink">Forgot Password?</a></p>
-						<p id="login-email-message" class="text-danger small-space"></p>
-						<p id="login-password-message" class="text-danger"></p>
-						<input id="loginbtn" class="btn btn-default loginbtn" type="submit" value="Log in">
-				</form>
-			</div>
-
-			<script>
-				$('#forgotPasswordLink').click(function (event) {
+		<div id="loginContent" class="fluid-container tab-content">
+			{{#if resetPassword}}
+				<script>
 					$('#login-tab').removeClass('active');
 					$('#signup-tab').removeClass('active');
-				});
-			</script>
+					$(document).ready(function(){
+					    activaTab('reset-pane');
+					});
 
-			<div id="signup-pane" class="container tab-pane fade">
-				<form id="signup-form" action="action" class="form-horizontal">
-					<div id="signupEmailGroup" class="form-group">
-						<label class="control-label" for="signupEmail">Email:</label><input id="signupEmail" type="email" name="signupEmail" placeholder="Email" class="form-control">
-					</div>
-					<div id="signupDisplayNameGroup" class="form-group">
-						<label class="control-label" for="signupDisplayName">Display Name (optional):</label><input id="signupDisplayName" type="text" name="signupDisplayName" placeholder="Display Name" class="form-control">
-					</div>
-					<div id="signupPasswordGroup" class="form-group">
-						<label class="control-label" for="signupPassword">Password:</label><input id="signupPassword" type="password" name="signupPassword" placeholder="Password" class="form-control">
-					</div>
-					<div id="signupConfirmPasswordGroup" class="form-group">
-						<label class="control-label" for="signupConfirmPassword">Confirm Password:</label><input id="signupConfirmPassword" type="password" name="signupConfirmPassword" placeholder="Confirm Password" class="form-control">
-					</div>
-					<br>
-					<p id="signup-email-message" class="text-danger small-space"></p>
-					<p id="signup-password-message" class="text-danger small-space"></p>
-					<p id="signup-confirm-password-message" class="text-danger"></p>
-					<input id="signupbtn" class="btn btn-default loginbtn" type="submit" value="Sign up">
-				</form>
-			</div>
-
-			<div id="recovery-pane" class="container tab-pane fade">
-				{{#if resetPassword}}
+					function activaTab(tab){
+					    $('.nav-tabs a[href="#' + tab + '"]').tab('show');
+					};
+				</script>
+				<div id="reset-pane" class="fluid-container tab-pane fade">
 					<form id="new-password-form" action="action" class="form-horizontal">
 						<h4>Reset Password</h4>
 						<div  id="newPasswordGroup" class="form-group">
@@ -72,22 +41,69 @@
 							<label class="control-label" for="confirmNewPassword">Confirm New Password:</label><input id ="confirmNewPassword" type="password" name="confirmNewPassword" placeholder="Confirm Password" class="form-control">
 						</div>
 						<br>
-						<p id="reset-password-message" class="text-danger"></p>
-						<p id="reset-confirm-message" class="text-danger"></p>
+						<p id="new-password-message" class="text-danger"></p>
+						<p id="confirm-new-password-message" class="text-danger"></p>
 						<input id="changePasswordbtn" class="btn btn-default loginbtn" type="submit" value="Change Password">
 					</form>
-				{{else}}
-					<form id="recovery-form" action="action" class="form-horizontal">
-						<h4>Recover Password</h4>
-						<div  id="recoveryEmailGroup" class="form-group">
-							<label class="control-label" for="recoveryEmail">Email:</label><input id ="recoveryEmail" type="text" name="recoveryEmail" placeholder="Email" class="form-control">
+				</div>				
+			{{else}}
+				<div id="login-pane" class="fluid-container tab-pane fade in active">	
+					<form id="login-form" action="action" class="form-horizontal">
+						<div id="loginEmailGroup" class="form-group">
+							<label class="control-label" for="loginEmail">Email:</label><input id="loginEmail" type="email" name="loginEmail" placeholder="Email" class="form-control">
+						</div>
+						<div id="loginPasswordGroup" class="form-group">
+							<label class="control-label" for="loginPassword">Password:</label><input id="loginPassword" type="password" name="loginPassword" placeholder="Password" class="form-control">
+						</div>
+							<p id="forgotPassword"><a data-toggle="tab" href="#recovery-pane" id="forgotPasswordLink">Forgot Password?</a></p>
+							<p id="login-email-message" class="text-danger small-space"></p>
+							<p id="login-password-message" class="text-danger"></p>
+							<input id="loginbtn" class="btn btn-default loginbtn" type="submit" value="Log in">
+					</form>
+				</div>
+
+				<script>
+					$('#forgotPasswordLink').click(function (event) {
+						$('#login-tab').removeClass('active');
+						$('#signup-tab').removeClass('active');
+					});
+				</script>
+
+				<div id="signup-pane" class="fluid-container tab-pane fade">
+					<form id="signup-form" action="action" class="form-horizontal">
+						<div id="signupEmailGroup" class="form-group">
+							<label class="control-label" for="signupEmail">Email:</label><input id="signupEmail" type="email" name="signupEmail" placeholder="Email" class="form-control">
+						</div>
+						<div id="signupDisplayNameGroup" class="form-group">
+							<label class="control-label" for="signupDisplayName">Display Name (optional):</label><input id="signupDisplayName" type="text" name="signupDisplayName" placeholder="Display Name" class="form-control">
+						</div>
+						<div id="signupPasswordGroup" class="form-group">
+							<label class="control-label" for="signupPassword">Password:</label><input id="signupPassword" type="password" name="signupPassword" placeholder="Password" class="form-control">
+						</div>
+						<div id="signupConfirmPasswordGroup" class="form-group">
+							<label class="control-label" for="signupConfirmPassword">Confirm Password:</label><input id="signupConfirmPassword" type="password" name="signupConfirmPassword" placeholder="Confirm Password" class="form-control">
 						</div>
 						<br>
-						<p id="recovery-email-message" class="text-danger"></p>
-						<input id="sendResetInstructionbtn" class="btn btn-default loginbtn" type="submit" value="Send Reset Instructions">
+						<p id="signup-email-message" class="text-danger small-space"></p>
+						<p id="signup-password-message" class="text-danger small-space"></p>
+						<p id="signup-confirm-password-message" class="text-danger"></p>
+						<input id="signupbtn" class="btn btn-default loginbtn" type="submit" value="Sign up">
 					</form>
-				{{/if}}
-			</div>
+				</div>
+
+				<div id="recovery-pane" class="fluid-container tab-pane fade">
+						<form id="recovery-form" action="action" class="form-horizontal">
+							<h4>Recover Password</h4>
+							<div  id="recoveryEmailGroup" class="form-group">
+								<label class="control-label" for="recoveryEmail">Email:</label><input id ="recoveryEmail" type="email" name="recoveryEmail" placeholder="Email" class="form-control">
+							</div>
+							<br>
+							<p id="recovery-email-message" class="text-danger"></p>
+							<input id="sendResetInstructionbtn" class="btn btn-default loginbtn" type="submit" value="Send Reset Instructions">
+						</form>
+						<p id="email-sent-message" class="text-success hidden"></p>
+				</div>
+			{{/if}}
 		</div>
 	</div>
 </template>
@@ -96,7 +112,7 @@
 <template name="passwordRecovery">
 	{{#if resetPassword}}
 		<form id="new-password-form" action="action" class="form-horizontal">
-			<div class="container">
+			<div class="fluid-container">
 				<label>New Password:<input id ="newPassword" type="password" name="newPassword"></label>
 				<label>Confirm New Password:<input id ="confirmNewPassword" type="password" name="confirmNewPassword"></label>
 				<input id="changePasswordbtn" class="btn btn-default loginbtn" type="submit" value="Change Password">
@@ -104,7 +120,7 @@
 		</form>
 	{{else}}
 		<form id="recovery-form" action="action" class="form-horizontal">
-			<div class="container">
+			<div class="fluid-container">
 				<label>Email:<input id ="recoveryEmail" type="text" name="recoveryEmail"></label>
 				<input id="sendResetInstructionbtn" class="btun btn-default loginbtn" type="submit" value="Send Reset Instructions"> 
 			</div>
@@ -114,7 +130,7 @@
 -->
 
 <template name="dashboard">
-	<div class="container">
+	<div class="fluid-fluid-container">
 		<br>
 		<p>{{user}}</p>
 		<p>Welcome 

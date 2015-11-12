@@ -6,6 +6,10 @@
 	border-bottom-color: #3E444C !important;
 }
 
+.hidden {
+	display: none;
+}
+
 div.form-group {
 	margin-bottom: 0px;
 }
