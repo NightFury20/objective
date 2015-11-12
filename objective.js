@@ -44,25 +44,23 @@ if (Meteor.isClient) {
 
 	Accounts.onEmailVerificationLink(function(token, done) {
 		//Login automatically
-		Accounts.verifyEmail(token, function(err) {
-				Session.set('notification', true);
+		Accounts.verifyEmail(token, function(err) {	// This always runs last
 			if(err) {
+				alert(err);/*
 				$('#notificationText').removeClass();
 				$('#notificationText').addClass("text-danger");
 				$('#notificationText').text("An error occured while verifying email: " + err);
+				*/
 			} else {
+				alert("Email has been verified");
+				/*
 				$('#notificationText').removeClass();
 				$('#notificationText').addClass("text-success");
 				$('#notificationText').text("Your password reset was successful");
-			}
+				*/
+			}	
 		});
-		//Start notification Session
 	});
-
-	// This runs if the resetPasswordToken is present (aka clicked from email)
-	if (Accounts._resetPasswordToken) {
-		Session.set('resetPassword', Accounts._resetPasswordToken);
-	}
 
 	Template.login.events({	// Responds to login submit event
  		'submit #login-form': function(event, template) {	//When form is submitted
@@ -294,7 +292,7 @@ if (Meteor.isClient) {
 
 			if(password2 === "") {
 				validated = false;
-				$('#onfirm-new-password-message').text("Confirm field is empty");
+				$('#confirm-new-password-message').text("Confirm field is empty");
 				$('#confirmNewPasswordGroup').addClass('has-error');
 			}
 
@@ -317,10 +315,12 @@ if (Meteor.isClient) {
 		    			/* Do password reset functions */
 		    			Session.set('resetPassword', null);
 
+		    			alert("Password successfully reset");
+		    			/*
 		    			$('#notificationText').removeClass();
 						$('#notificationText').addClass("text-success");
 		    			$('#notificationText').text("Your password reset was successful");
-		    			Session.get('notification');
+		    			*/
 		    		}
 		    		//Session.set('loading', false);
 		    		$('#changePasswordbtn').removeClass('disabled');
@@ -338,7 +338,7 @@ if (Meteor.isClient) {
 			return Session.get('resetPassword');
 		}
 	});
-
+	/*
 	Template.notifier.events({
 		'submit #notifier-form' : function(event) {
 			event.preventDefault();
@@ -346,7 +346,7 @@ if (Meteor.isClient) {
 			return false;	// Stops page from reloading
 		}
 	})
-
+	*/
  	Template.dashboard.events({
  		'click #logout': function(event) {
  			event.preventDefault();

@@ -3,14 +3,10 @@
 </head>
 
 <body>
-	{{#if notification}}
-		{{> notifier}}
+	{{#if currentUser}}
+		{{> dashboard}}
 	{{else}}
-		{{#if currentUser}}
-			{{> dashboard}}
-		{{else}}
-				{{> login}}
-		{{/if}}
+			{{> login}}
 	{{/if}}
 </body>
 
@@ -113,14 +109,16 @@
 	</div>
 </template>
 
+<!--
 <template name="notifier">
 	<div id="notifierContainer" class="container-fluid">
 		<form id="notifier-form" action="action" class="form-horizontal">
 			<p id="notificationText"></p>
-			<input id="toDashboardbtn" class="btn btn-default loginbtn" type="submit" value="Go To Dashboard">
+			<input id="continuebtn" class="btn btn-default loginbtn" type="submit" value="Continue To Dashboard">
 		</form>
 	</div>
 </template>
+-->
 
 <template name="dashboard">
 	<div id="dashboardContainer" class="container-fluid">
