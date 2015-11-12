@@ -45,10 +45,15 @@ if (Meteor.isClient) {
 	Accounts.onEmailVerificationLink(function(token, done) {
 		//Login automatically
 		Accounts.verifyEmail(token, function(err) {
+				Session.set('notification', true);
 			if(err) {
-				alert("An error occured: " + err);
+				$('#notificationText').removeClass();
+				$('#notificationText').addClass("text-danger");
+				$('#notificationText').text("An error occured while verifying email: " + err);
 			} else {
-				alert("Your email has successfully been verified");
+				$('#notificationText').removeClass();
+				$('#notificationText').addClass("text-success");
+				$('#notificationText').text("Your password reset was successful");
 			}
 		});
 		//Start notification Session
@@ -95,6 +100,8 @@ if (Meteor.isClient) {
 
 			// If validation passes, supply the appropriate fields to the Meteor.loginWithPassword() function.
 			if (validated) {
+				//Session.set('loading', true);
+				$('#loginbtn').addClass('disabled');
 				Meteor.loginWithPassword(email, password, function(err) {
 					if (err) {
 						// The user might not have been found, or their password could be incorrect.  Inform the user that their login attempt has failed
@@ -115,6 +122,8 @@ if (Meteor.isClient) {
 						// The user has been logged in.
 						console.log("Login successful");
 					}
+					//Session.set('loading', false);
+					$('#loginbtn').removeClass('disabled');
 				});
 			} else {
 				// Not validated, informed user above
@@ -180,6 +189,7 @@ if (Meteor.isClient) {
 
 		    if (validated) {
 		    	//Session.set('loading', true);
+		    	$('#signupbtn').addClass('disabled');
 			    Accounts.createUser({username: email, email: email, password : password, profile:{name: name}}, function(err){
 			        if (err) {
 			    	    // Inform the user that account creation failed
@@ -200,6 +210,7 @@ if (Meteor.isClient) {
 			            console.log("Account created");
 			        }
 			        //Session.set('loading', false);
+			        $('#signupbtn').removeClass('disabled');
 			    });
 			} else {
 				// Not validated, informed user above
@@ -210,7 +221,7 @@ if (Meteor.isClient) {
 
 		'submit #recovery-form': function(event, template) {
 			event.preventDefault();
-			$('#sendResetInstructionbtn').addClass('disabled');
+			
 			// Reset Validations
 			$('#recovery-email-message').text("");
  			$('#recoveryEmailGroup').removeClass('has-error');
@@ -231,8 +242,8 @@ if (Meteor.isClient) {
 			}
 
 			if (validated) {
-
 				//Session.set('loading', true);
+				$('#sendResetInstructionbtn').addClass('disabled');
 				Accounts.forgotPassword({email: email}, function(err) {
 					if (err) {
 						if (err.message === "User not found [403]") {
@@ -252,6 +263,7 @@ if (Meteor.isClient) {
 						console.log("Email sent to " + email + ", please check your email for further instructions");
 					}
 					//Session.set('loading', false);
+					$('#sendResetInstructionbtn').removeClass('disabled');
 				});
 			}
 			else {
@@ -295,7 +307,8 @@ if (Meteor.isClient) {
 		    }
 
 		    if (validated) {
-		    	Session.set('loading', true);
+		    	//Session.set('loading', true);
+		    	$('#changePasswordbtn').addClass('disabled');
 		    	Accounts.resetPassword(Session.get('resetPassword'), password, function(err) {
 		    		if (err) {
 		    			$('#new-password-message').text("Password Reset Failed: " + err);
@@ -303,11 +316,17 @@ if (Meteor.isClient) {
 		    		} else {
 		    			/* Do password reset functions */
 		    			Session.set('resetPassword', null);
+
+		    			$('#notificationText').removeClass();
+						$('#notificationText').addClass("text-success");
+		    			$('#notificationText').text("Your password reset was successful");
+		    			Session.get('notification');
 		    		}
-		    		Session.set('loading', false);
+		    		//Session.set('loading', false);
+		    		$('#changePasswordbtn').removeClass('disabled');
 		    	});
 		    }
-		    return false;
+		    return false;	// Stops page from reloading
 		}
 	});
 
@@ -319,6 +338,14 @@ if (Meteor.isClient) {
 			return Session.get('resetPassword');
 		}
 	});
+
+	Template.notifier.events({
+		'submit #notifier-form' : function(event) {
+			event.preventDefault();
+			Session.set('notification', null);
+			return false;	// Stops page from reloading
+		}
+	})
 
  	Template.dashboard.events({
  		'click #logout': function(event) {

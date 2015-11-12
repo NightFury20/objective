@@ -3,14 +3,14 @@
 </head>
 
 <body>
-	{{#if currentUser}}
-		{{#if notification}}
-			{{> notifier}}
-		{{else}}
+	{{#if notification}}
+		{{> notifier}}
+	{{else}}
+		{{#if currentUser}}
 			{{> dashboard}}
+		{{else}}
+				{{> login}}
 		{{/if}}
-	{{else}}	
-		{{> login}}
 	{{/if}}
 </body>
 
@@ -113,26 +113,14 @@
 	</div>
 </template>
 
-<!--
-<template name="passwordRecovery">
-	{{#if resetPassword}}
-		<form id="new-password-form" action="action" class="form-horizontal">
-			<div class="container-fluid">
-				<label>New Password:<input id ="newPassword" type="password" name="newPassword"></label>
-				<label>Confirm New Password:<input id ="confirmNewPassword" type="password" name="confirmNewPassword"></label>
-				<input id="changePasswordbtn" class="btn btn-default loginbtn" type="submit" value="Change Password">
-			</div>
+<template name="notifier">
+	<div id="notifierContainer" class="container-fluid">
+		<form id="notifier-form" action="action" class="form-horizontal">
+			<p id="notificationText"></p>
+			<input id="toDashboardbtn" class="btn btn-default loginbtn" type="submit" value="Go To Dashboard">
 		</form>
-	{{else}}
-		<form id="recovery-form" action="action" class="form-horizontal">
-			<div class="container-fluid">
-				<label>Email:<input id ="recoveryEmail" type="text" name="recoveryEmail"></label>
-				<input id="sendResetInstructionbtn" class="btun btn-default loginbtn" type="submit" value="Send Reset Instructions"> 
-			</div>
-		</form>
-	{{/if}}
+	</div>
 </template>
--->
 
 <template name="dashboard">
 	<div id="dashboardContainer" class="container-fluid">
@@ -153,11 +141,5 @@
 			{{/if}}
 		</p>
 		<p><a id="logout" href="#">Logout</a></p>
-	</div>
-</template>
-
-<template name="notifier">
-	<div>
-
 	</div>
 </template>

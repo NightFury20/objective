@@ -61,3 +61,8 @@ div.form-group {
 #dashboardContainer {
 	max-width: 960px;
 }
+
+/* Notifier Template CSS */
+#notifierContainer {
+	padding-top: 40px;
+}
