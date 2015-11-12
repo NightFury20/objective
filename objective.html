@@ -4,21 +4,25 @@
 
 <body>
 	{{#if currentUser}}
-		{{> dashboard}}
+		{{#if notification}}
+			{{> notifier}}
+		{{else}}
+			{{> dashboard}}
+		{{/if}}
 	{{else}}	
 		{{> login}}
 	{{/if}}
 </body>
 
 <template name="login">
-	<div id="loginContainer" class="fluid-container">
-		<ul id="loginNav" class="fluid-container nav nav-tabs nav-justified">
+	<div id="loginContainer" class="container-fluid">
+		<ul id="loginNav" class="container-fluid nav nav-tabs nav-justified">
 			<li id="login-tab" class="active"><a data-toggle="tab" href="#login-pane">Log in</a></li>
 			<li id="signup-tab"><a data-toggle="tab" href="#signup-pane">Sign up</a></li>
 			<li id="recovery-tab" class="hidden"><a data-toggle="tab" href="#recovery-pane">Recover Password</a></li>
 			<li id="reset-tab" class="hidden"><a data-toggle="tab" href="#reset-pane">Reset Password</a></li> 
 		</ul>
-		<div id="loginContent" class="fluid-container tab-content">
+		<div id="loginContent" class="container-fluid tab-content">
 			{{#if resetPassword}}
 				<script>
 					$('#login-tab').removeClass('active');
@@ -31,7 +35,7 @@
 					    $('.nav-tabs a[href="#' + tab + '"]').tab('show');
 					};
 				</script>
-				<div id="reset-pane" class="fluid-container tab-pane fade">
+				<div id="reset-pane" class="container-fluid tab-pane fade">
 					<form id="new-password-form" action="action" class="form-horizontal">
 						<h4>Reset Password</h4>
 						<div  id="newPasswordGroup" class="form-group">
@@ -47,7 +51,7 @@
 					</form>
 				</div>				
 			{{else}}
-				<div id="login-pane" class="fluid-container tab-pane fade in active">	
+				<div id="login-pane" class="container-fluid tab-pane fade in active">	
 					<form id="login-form" action="action" class="form-horizontal">
 						<div id="loginEmailGroup" class="form-group">
 							<label class="control-label" for="loginEmail">Email:</label><input id="loginEmail" type="email" name="loginEmail" placeholder="Email" class="form-control">
@@ -69,7 +73,7 @@
 					});
 				</script>
 
-				<div id="signup-pane" class="fluid-container tab-pane fade">
+				<div id="signup-pane" class="container-fluid tab-pane fade">
 					<form id="signup-form" action="action" class="form-horizontal">
 						<div id="signupEmailGroup" class="form-group">
 							<label class="control-label" for="signupEmail">Email:</label><input id="signupEmail" type="email" name="signupEmail" placeholder="Email" class="form-control">
@@ -91,7 +95,7 @@
 					</form>
 				</div>
 
-				<div id="recovery-pane" class="fluid-container tab-pane fade">
+				<div id="recovery-pane" class="container-fluid tab-pane fade">
 						<form id="recovery-form" action="action" class="form-horizontal">
 							<h4>Recover Password</h4>
 							<div  id="recoveryEmailGroup" class="form-group">
@@ -101,7 +105,8 @@
 							<p id="recovery-email-message" class="text-danger"></p>
 							<input id="sendResetInstructionbtn" class="btn btn-default loginbtn" type="submit" value="Send Reset Instructions">
 						</form>
-						<p id="email-sent-message" class="text-success hidden"></p>
+						<p id="email-sent-message" class="text-success hidden" style="margin-top: 10px;"></p>
+						<p id="check-email-message" class="text-success hidden">Please check your email for further instructions</p>
 				</div>
 			{{/if}}
 		</div>
@@ -112,7 +117,7 @@
 <template name="passwordRecovery">
 	{{#if resetPassword}}
 		<form id="new-password-form" action="action" class="form-horizontal">
-			<div class="fluid-container">
+			<div class="container-fluid">
 				<label>New Password:<input id ="newPassword" type="password" name="newPassword"></label>
 				<label>Confirm New Password:<input id ="confirmNewPassword" type="password" name="confirmNewPassword"></label>
 				<input id="changePasswordbtn" class="btn btn-default loginbtn" type="submit" value="Change Password">
@@ -120,7 +125,7 @@
 		</form>
 	{{else}}
 		<form id="recovery-form" action="action" class="form-horizontal">
-			<div class="fluid-container">
+			<div class="container-fluid">
 				<label>Email:<input id ="recoveryEmail" type="text" name="recoveryEmail"></label>
 				<input id="sendResetInstructionbtn" class="btun btn-default loginbtn" type="submit" value="Send Reset Instructions"> 
 			</div>
@@ -130,7 +135,7 @@
 -->
 
 <template name="dashboard">
-	<div class="fluid-fluid-container">
+	<div id="dashboardContainer" class="container-fluid">
 		<br>
 		<p>{{user}}</p>
 		<p>Welcome 
@@ -148,5 +153,11 @@
 			{{/if}}
 		</p>
 		<p><a id="logout" href="#">Logout</a></p>
+	</div>
+</template>
+
+<template name="notifier">
+	<div>
+
 	</div>
 </template>

@@ -42,7 +42,17 @@ if (Meteor.isClient) {
 	  	return regex.test(email);
 	}
 
-	//Accounts.onEmailVerificationLink(
+	Accounts.onEmailVerificationLink(function(token, done) {
+		//Login automatically
+		Accounts.verifyEmail(token, function(err) {
+			if(err) {
+				alert("An error occured: " + err);
+			} else {
+				alert("Your email has successfully been verified");
+			}
+		});
+		//Start notification Session
+	});
 
 	// This runs if the resetPasswordToken is present (aka clicked from email)
 	if (Accounts._resetPasswordToken) {
@@ -169,7 +179,7 @@ if (Meteor.isClient) {
 		    }
 
 		    if (validated) {
-		    	Session.set('loading', true);
+		    	//Session.set('loading', true);
 			    Accounts.createUser({username: email, email: email, password : password, profile:{name: name}}, function(err){
 			        if (err) {
 			    	    // Inform the user that account creation failed
@@ -189,7 +199,7 @@ if (Meteor.isClient) {
 			            // Success. Account has been created and the user has logged in successfully. 
 			            console.log("Account created");
 			        }
-			        Session.set('loading', false);
+			        //Session.set('loading', false);
 			    });
 			} else {
 				// Not validated, informed user above
@@ -200,7 +210,7 @@ if (Meteor.isClient) {
 
 		'submit #recovery-form': function(event, template) {
 			event.preventDefault();
-
+			$('#sendResetInstructionbtn').addClass('disabled');
 			// Reset Validations
 			$('#recovery-email-message').text("");
  			$('#recoveryEmailGroup').removeClass('has-error');
@@ -221,7 +231,8 @@ if (Meteor.isClient) {
 			}
 
 			if (validated) {
-				Session.set('loading', true);
+
+				//Session.set('loading', true);
 				Accounts.forgotPassword({email: email}, function(err) {
 					if (err) {
 						if (err.message === "User not found [403]") {
@@ -235,11 +246,12 @@ if (Meteor.isClient) {
 						}					
 					} else {
 						$('#recovery-form').addClass('hidden');
-						$('#email-sent-message').text("<br />Email sent to: " + email + "<br /><br />Please check your email for further instructions");
+						$('#email-sent-message').text("Email sent to: " + email);
 						$('#email-sent-message').removeClass('hidden');
+						$('#check-email-message').removeClass('hidden');
 						console.log("Email sent to " + email + ", please check your email for further instructions");
 					}
-					Session.set('loading', false);
+					//Session.set('loading', false);
 				});
 			}
 			else {
@@ -300,7 +312,7 @@ if (Meteor.isClient) {
 	});
 
 	Template.login.helpers({
-		resetPassword : function(t) {
+		resetPassword : function(template) {
 			if (Accounts._resetPasswordToken) {
 				Session.set('resetPassword', Accounts._resetPasswordToken);
 			}
@@ -313,7 +325,7 @@ if (Meteor.isClient) {
  			event.preventDefault();
  			Meteor.logout(function(err) {
  				if(err) {
- 					alert("Unable to logout from application");
+ 					console.log("Unable to logout from application: " + err);
  				}
  			});
  		}

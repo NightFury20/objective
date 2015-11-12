@@ -56,3 +56,8 @@ div.form-group {
 	margin-bottom: 0px;
 }
 /* End of Log in Template CSS */
+
+/* Dashboard Template CSS */
+#dashboardContainer {
+	max-width: 960px;
+}
