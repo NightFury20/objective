@@ -36,7 +36,7 @@ if (Meteor.isServer) {
 
 if (Meteor.isClient) {
 	// This code only runs on the client (meant for the interface)
-	
+
 	// Trim helper
 	var trimInput = function(val) {
 		return val.replace(/^\s*|\s*$/g, "");
@@ -57,6 +57,7 @@ if (Meteor.isClient) {
 				$('#notificationText').addClass("text-danger");
 				$('#notificationText').text("An error occured while verifying email: " + err);
 				*/
+				console.log("An error occured while verifying email: " + err);
 			} else {
 				alert("Email has been verified");
 				/*
@@ -64,9 +65,16 @@ if (Meteor.isClient) {
 				$('#notificationText').addClass("text-success");
 				$('#notificationText').text("Your password reset was successful");
 				*/
+				console.log("Email has been verified");
 			}	
 		});
 	});
+
+	Template.body.helpers({
+		'notification': function() {
+			return Session.get('notification');
+		}
+	})
 
 	Template.login.events({	// Responds to login submit event
  		'submit #login-form': function(event, template) {	//When form is submitted
@@ -344,28 +352,35 @@ if (Meteor.isClient) {
 			return Session.get('resetPassword');
 		}
 	});
-	/*
+	
 	Template.notifier.events({
 		'submit #notifier-form' : function(event) {
 			event.preventDefault();
-			Session.set('notification', null);
+			Session.set('notification', false);
 			return false;	// Stops page from reloading
 		}
 	})
-	*/
+	
  	Template.dashboard.events({
  		'click #resentEmailVerificationLink' : function(event) {
  			event.preventDefault();
-
+ 			var id = Meteor.userId();
+ 			
  			Meteor.call('resendEmailVerification', id, function(err) {
+ 				$('#notificationText').removeClass();
  				if(err) {
- 					alert("resendEmail Verification failed: " + err);
+ 					$('#notificationText').addClass('text-danger');
+ 					$('#notificationText').text("Email verification send failed: " + err);
+ 					$('#continuebtn').val("Continue to Dashboard");
+ 					console.log("Email Verification sending failed: " + err);
  				} else {
- 					alert("Email verification has been resent");
+ 					$('#notificationText').addClass('text-success');
+ 					$('#notificationText').text("An Email Verification link has been sent to " + Meteor.user().emails[0].address + ", please check your email.");
+ 					$('#continuebtn').val("Continue to Dashboard");
+ 					console.log("An Email Verification link has been sent to " + Meteor.user().emails[0].address + ", please check your email");
  				}
+ 				Session.set('notification', true);
  			});
-
- 			return false;	// Stops page from reloading
  		},
 
  		'click #logout': function(event) {
@@ -373,10 +388,17 @@ if (Meteor.isClient) {
  			Meteor.logout(function(err) {
  				if(err) {
  					console.log("Unable to logout from application: " + err);
+ 				} else {
+ 					console.log("Logout was successful");
  				}
  			});
 
  			return false;	// Stops page from reloading
+ 		},
+
+ 		'click #noticationTestLink' : function(event) {
+ 			event.preventDefault();
+ 			Session.set('notification', true);
  		}
  	});
 }

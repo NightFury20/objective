@@ -66,3 +66,16 @@ div.form-group {
 #notifierContainer {
 	padding-top: 40px;
 }
+
+#notifierContent {
+	padding-top: 10px;
+	padding-bottom: 15px;
+	max-width: 250px;
+	border: solid 1px #1C1E22;
+	border-radius: 5px;
+	background-color: #3E444C;
+}
+
+#continuebtn {
+	margin-top: 20px;
+}

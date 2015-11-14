@@ -3,19 +3,15 @@
 </head>
 
 <body>
-	<!--
 	{{#if notification}} 
 		{{> notifier}}
 	{{else}}
-	-->
 		{{#if currentUser}}
 			{{> dashboard}}
 		{{else}}
 			{{> login}}
 		{{/if}}
-	<!--
 	{{/if}}
-	-->
 </body>
 
 <template name="login">
@@ -117,16 +113,18 @@
 	</div>
 </template>
 
-<!--
+
 <template name="notifier">
 	<div id="notifierContainer" class="container-fluid">
-		<form id="notifier-form" action="action" class="form-horizontal">
-			<p id="notificationText"></p>
-			<input id="continuebtn" class="btn btn-default loginbtn" type="submit" value="Continue To Dashboard">
-		</form>
+		<div id="notifierContent" class="container-fluid">
+			<form id="notifier-form" action="action" class="form-horizontal">
+				<p id="notificationText"></p>
+				<input id="continuebtn" class="btn btn-default loginbtn" type="submit" value="">
+			</form>
+		</div>
 	</div>
 </template>
--->
+
 
 <template name="dashboard">
 	<div id="dashboardContainer" class="container-fluid">
@@ -147,5 +145,6 @@
 			{{/if}}
 		</p>
 		<p><a id="logout" href="#">Logout</a></p>
+		<p><a id="noticationTestLink" href="#">Go to notifier pane</a></p>
 	</div>
 </template>
