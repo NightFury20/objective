@@ -3,11 +3,19 @@
 </head>
 
 <body>
-	{{#if currentUser}}
-		{{> dashboard}}
+	<!--
+	{{#if notification}} 
+		{{> notifier}}
 	{{else}}
+	-->
+		{{#if currentUser}}
+			{{> dashboard}}
+		{{else}}
 			{{> login}}
+		{{/if}}
+	<!--
 	{{/if}}
+	-->
 </body>
 
 <template name="login">
@@ -135,7 +143,7 @@
 			{{#if currentUser.emails.[0].verified}}
 				<p>Email is verified</p>
 			{{else}}
-				<p>Email is not verified</p>
+				<p>Email is not verified <a id="resentEmailVerificationLink" href="#">verify</a></p>
 			{{/if}}
 		</p>
 		<p><a id="logout" href="#">Logout</a></p>

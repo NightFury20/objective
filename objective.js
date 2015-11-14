@@ -26,6 +26,12 @@ if (Meteor.isServer) {
 	  		loginExpirationInDays: 30
 	  	});
   	});
+
+  	Meteor.methods ({
+	resendEmailVerification : function(id) {
+		Accounts.sendVerificationEmail(id);
+	}
+});
 }
 
 if (Meteor.isClient) {
@@ -348,6 +354,20 @@ if (Meteor.isClient) {
 	})
 	*/
  	Template.dashboard.events({
+ 		'click #resentEmailVerificationLink' : function(event) {
+ 			event.preventDefault();
+
+ 			Meteor.call('resendEmailVerification', id, function(err) {
+ 				if(err) {
+ 					alert("resendEmail Verification failed: " + err);
+ 				} else {
+ 					alert("Email verification has been resent");
+ 				}
+ 			});
+
+ 			return false;	// Stops page from reloading
+ 		},
+
  		'click #logout': function(event) {
  			event.preventDefault();
  			Meteor.logout(function(err) {
@@ -355,6 +375,8 @@ if (Meteor.isClient) {
  					console.log("Unable to logout from application: " + err);
  				}
  			});
+
+ 			return false;	// Stops page from reloading
  		}
  	});
 }
