@@ -145,6 +145,19 @@
 			{{/if}}
 		</p>
 		<p><a id="logout" href="#">Logout</a></p>
-		<p><a id="noticationTestLink" href="#">Go to notifier pane</a></p>
+
+		<h1>Objective</h1>
+		<div id="allObjectivesContainer" class="container-fluid">
+			{{#each objective}}
+				{{objective}}
+			{{/each}}
+		</div>
+	</div>
+</template>
+
+<template name="objective">
+	<div class="objectiveContainer container-fluid">
+		<h4>{{objective.name}}</h4>
+		<p>{{objective.description}}</p>
 	</div>
 </template>

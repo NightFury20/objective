@@ -37,6 +37,9 @@ if (Meteor.isServer) {
 if (Meteor.isClient) {
 	// This code only runs on the client (meant for the interface)
 
+	// Notification variables
+	var notificationType, notificationText, continueTo;
+
 	// Trim helper
 	var trimInput = function(val) {
 		return val.replace(/^\s*|\s*$/g, "");
@@ -51,22 +54,17 @@ if (Meteor.isClient) {
 	Accounts.onEmailVerificationLink(function(token, done) {
 		//Login automatically
 		Accounts.verifyEmail(token, function(err) {	// This always runs last
+			continueTo = "dashboard";
 			if(err) {
-				alert(err);/*
-				$('#notificationText').removeClass();
-				$('#notificationText').addClass("text-danger");
-				$('#notificationText').text("An error occured while verifying email: " + err);
-				*/
+				notificationType = "error";
+				notificationText = "An error occured while verifying email: " + err.message;
 				console.log("An error occured while verifying email: " + err);
 			} else {
-				alert("Email has been verified");
-				/*
-				$('#notificationText').removeClass();
-				$('#notificationText').addClass("text-success");
-				$('#notificationText').text("Your password reset was successful");
-				*/
-				console.log("Email has been verified");
-			}	
+				notificationType = "success";
+				notificationText = "Your email has been verified.";
+				console.log("Your email has been verified.");
+			}
+			Session.set('notification', true);
 		});
 	});
 
@@ -265,7 +263,7 @@ if (Meteor.isClient) {
 						}
 						else {
 							$('#recovery-email-message').text("Password Reset Failed: " + err.message);
-							console.log("Password Reset Failed: " + err);
+							console.log("Password Reset Failed: " + err.message);
 						}					
 					} else {
 						$('#recovery-form').addClass('hidden');
@@ -323,20 +321,23 @@ if (Meteor.isClient) {
 		    	$('#changePasswordbtn').addClass('disabled');
 		    	Accounts.resetPassword(Session.get('resetPassword'), password, function(err) {
 		    		if (err) {
-		    			$('#new-password-message').text("Password Reset Failed: " + err);
-		    			console.log("Password Reset Failed: " + err);
+		    			notificationType = "error";
+		    			notificationText = "Password Reset Failed: " + err.message;
+		    			continueTo = "login";
+		    			console.log("Password Reset Failed: " + err.message);
 		    		} else {
 		    			/* Do password reset functions */
+						notificationType = "success";
+		    			notificationText = "Your password reset was successful";
+		    			continueTo = "dashboard";
+		    			console.log(" Your password reset was successful");	    			
+		    			
+		    			Accounts._resetPasswordToken = null;
 		    			Session.set('resetPassword', null);
-
-		    			alert("Password successfully reset");
-		    			/*
-		    			$('#notificationText').removeClass();
-						$('#notificationText').addClass("text-success");
-		    			$('#notificationText').text("Your password reset was successful");
-		    			*/
+		    			$('#login-tab').hasClass('active');
 		    		}
 		    		//Session.set('loading', false);
+		    		Session.set('notification', true);
 		    		$('#changePasswordbtn').removeClass('disabled');
 		    	});
 		    }
@@ -352,6 +353,24 @@ if (Meteor.isClient) {
 			return Session.get('resetPassword');
 		}
 	});
+
+	Template.notifier.onRendered(function() {
+		$('#notificationText').removeClass();
+			
+			if(notificationType === "error") {
+				$('#notificationText').addClass('text-danger');
+			} else if(notificationType === "success") {
+				$('#notificationText').addClass('text-success');
+			}
+
+			$('#notificationText').text(notificationText);
+
+			if(continueTo === 'dashboard') {
+				$('#continuebtn').val("Continue to Dashboard");
+			} else if (continueTo === 'login') {
+				$('#continuebtn').val("Continue to Login");
+			}
+	})
 	
 	Template.notifier.events({
 		'submit #notifier-form' : function(event) {
@@ -365,22 +384,21 @@ if (Meteor.isClient) {
  		'click #resentEmailVerificationLink' : function(event) {
  			event.preventDefault();
  			var id = Meteor.userId();
- 			
+ 			//Session.set('loading', true);
  			Meteor.call('resendEmailVerification', id, function(err) {
- 				$('#notificationText').removeClass();
+ 				continueTo = "dashboard";
  				if(err) {
- 					$('#notificationText').addClass('text-danger');
- 					$('#notificationText').text("Email verification send failed: " + err);
- 					$('#continuebtn').val("Continue to Dashboard");
+ 					notificationType = "error";
+ 					notificationText = "Email verification send failed: " + err;
  					console.log("Email Verification sending failed: " + err);
  				} else {
- 					$('#notificationText').addClass('text-success');
- 					$('#notificationText').text("An Email Verification link has been sent to " + Meteor.user().emails[0].address + ", please check your email.");
- 					$('#continuebtn').val("Continue to Dashboard");
+ 					notificationType = "success";
+ 					notificationText = "An Email Verification link has been sent to " + Meteor.user().emails[0].address + ", please check your email.";
  					console.log("An Email Verification link has been sent to " + Meteor.user().emails[0].address + ", please check your email");
  				}
  				Session.set('notification', true);
  			});
+ 			//Session.set('loading', false);
  		},
 
  		'click #logout': function(event) {
@@ -395,10 +413,5 @@ if (Meteor.isClient) {
 
  			return false;	// Stops page from reloading
  		},
-
- 		'click #noticationTestLink' : function(event) {
- 			event.preventDefault();
- 			Session.set('notification', true);
- 		}
  	});
 }
